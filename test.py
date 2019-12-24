@@ -8,7 +8,7 @@ class Test:
 		self.title = title
 		self.questions = questions
 		self.test_id = test_id
-		self.correct_answers: List[bool] = [ans < 0 for ans in questions] # create a boolean list w/list comprehension
+		self.correct_answers: List[bool] = [ans < 0 for ans in questions] # create a 'False' boolean list w/list comprehension
 	
 	def check_test(self):
 		for q in questions:
@@ -22,11 +22,18 @@ class Test:
 
 	@staticmethod # decorator declaring this as a static method
 	def create(self):
-		values = (self.title, self.questions, self.test_id)
 		with DB() as database:
 			database.execute('''
-				INSERT INTO tests (title, questions, test_id)
-				VALUES (?, ?, ?)''', values)
+				INSESSRT INTO tests (title, test_id)
+				VALUES (?, ?)''', (self.title, self.test_id))
+			for q in self.questions:
+				database.execute('''
+					INSERT INTO questions (id, question, correct_answer_index)
+					VALUES(?, ?, ?)''',  (q.id, q.question, q.correct_answer))
+				for ans in self.questions.answers:
+					database.execute('''
+					INSERT INTO answers (id, answer)
+					VALUES(?, ?)''', (self.questions.answers.index(ans), ans)) # index + answer tuple (index = id)
 			return self
 
 	@staticmethod
