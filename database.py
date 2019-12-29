@@ -13,7 +13,7 @@ connection = sqlite3.connect(DB_NAME) # connect with the database file name
 connection.cursor().execute('''
 CREATE TABLE IF NOT EXISTS answers
 	(
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		id INTEGER PRIMARY KEY,
 		answer TEXT
 	)
 ''')

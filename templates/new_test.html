@@ -1,0 +1,26 @@
+<form action="/new/test" method="post">
+    <label>Title</label>
+    <input name="title"/>
+    </br>
+    <label>Questions</label>
+	<select name="question_one_id">
+		<option value="0">No question</option>
+		{% for question in questions %}
+		  <option value="{{ question.id }}">{{ question.question }}</option>
+		{% endfor %}
+	</select>
+	<select name="question_two_id">
+		<option value="0">No question</option>
+		{% for question in questions %}
+		  <option value="{{ question.id }}">{{ question.question }}</option>
+		{% endfor %}
+	</select>
+	<select name="question_three_id">
+		<option value="0">No question</option>
+		{% for question in questions %}
+		  <option value="{{ question.id }}">{{ question.question }}</option>
+		{% endfor %}
+	</select>
+    </br>
+    <button type="submit">Submit</button>
+</form>

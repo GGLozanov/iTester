@@ -20,24 +20,26 @@ class Test:
 		for q in questions:
 			q.set_answer(answers[q]) # set answer of question to one given (will be garnered through requests and made into list)
 
-	@staticmethod # decorator declaring this as a static method
 	def create(self):
 		with DB() as database:
 			database.execute('''
-				INSESSRT INTO tests (title, test_id)
+				INSERT INTO tests (title, test_id)
 				VALUES (?, ?)''', (self.title, self.test_id))
-			for q in self.questions:
-				database.execute('''
-					INSERT INTO questions (id, question, correct_answer_index)
-					VALUES(?, ?, ?)''',  (q.id, q.question, q.correct_answer))
-				for ans in self.questions.answers:
-					database.execute('''
-					INSERT INTO answers (id, answer)
-					VALUES(?, ?)''', (self.questions.answers.index(ans), ans)) # index + answer tuple (index = id)
-			return self
+
+			# might have to delete these insertions since they are done by question create method (?)
+			# have to find question by id here?
+#			for q in self.questions:
+#				database.execute('''
+#					INSERT INTO questions (id, question, correct_answer_index)
+#					VALUES(?, ?, ?)''',  (q.id, q.question, q.correct_answer))
+#				for ans in self.questions.answers:
+#					database.execute('''
+#					INSERT INTO answers (id, answer)
+#					VALUES(?, ?)''', (self.questions.answers.index(ans), ans)) # index + answer tuple (index = id)
+#			return self
 
 	@staticmethod
-	def get_all(self):
+	def get_all():
 		with DB() as database:
 			data = database.execute('''SELECT * FROM tests''').fetchall() # fetches all rows which correspond to the query (i.e. every row)
 			return [Test(*row) for row in data] 

@@ -1,0 +1,14 @@
+<title>Questions</title>
+
+<h1>Questions</h1>
+{% for question in questions %}
+<h2>{{ question.id }}) {{ question.question }}:</h2>
+<h3>Answers:</h3>
+<ul>
+	{% for ans in question.answers %}
+		<li>{{ ans }}</li>
+	{% endfor %}
+</ul>
+<br/>
+{% endfor %}
+
