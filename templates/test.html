@@ -1,0 +1,13 @@
+<title>Test {{ test.id }}</title>
+<h1>{{ test.title }} - Test {{ test.id }}</h1>
+
+{% for question in test.questions %}
+<h2>{{ question.id }}) {{ question.question }}</h2>
+	{% for answer in question.answers %}
+	<input type="checkbox" name="{{ question.answers.index(answer) }}" value="{{ answer }}">{{ answer }}</input>
+	{% endfor %}
+{% endfor %}
+
+<button type="submit">Submit</button>
+
+

@@ -3,19 +3,19 @@
     <input name="title"/>
     </br>
     <label>Questions</label>
-	<select name="question_one_id">
+	<select name="question_one">
 		<option value="0">No question</option>
 		{% for question in questions %}
 		  <option value="{{ question.id }}">{{ question.question }}</option>
 		{% endfor %}
 	</select>
-	<select name="question_two_id">
+	<select name="question_two">
 		<option value="0">No question</option>
 		{% for question in questions %}
 		  <option value="{{ question.id }}">{{ question.question }}</option>
 		{% endfor %}
 	</select>
-	<select name="question_three_id">
+	<select name="question_three">
 		<option value="0">No question</option>
 		{% for question in questions %}
 		  <option value="{{ question.id }}">{{ question.question }}</option>

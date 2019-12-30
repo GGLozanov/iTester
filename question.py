@@ -1,13 +1,12 @@
 from typing import List # import List duck-typing functionality from Python 3.5 lib
 from database import DB
+from adapter import Adapter
 
 # multiple-choice questions have an entire List with however many answers they have
 # questions with only one element in the list are treated as open-ended
 # number of question will be index in list
 
 class Question:
-	user_answer = None
-	correct_answer = None
 
 	def __init__(self, id: int, question: str, answers: List[str], correct_answer_index: int):
 		self.id = id
@@ -20,6 +19,9 @@ class Question:
 		else: self.correct_answer = answers[int(correct_answer_index)] # handle if answer_index > list size
 		
 		self.question_type: bool = False if len(answers) == 1 else True # is multiple choice or open-ended
+		
+	def __len__(self):
+		return len(self.answers)
 	
 	def set_answer(self, answer):
 		if answer not in answers:
@@ -42,33 +44,19 @@ class Question:
 	@staticmethod
 	def get_all():
 		with DB() as database:
-			data = [list(tup) for tup in database.execute('''SELECT * FROM questions''').fetchall()]
-	
-			print(data)
-	
-			for row in data:
-				answers = database.execute('''SELECT answer FROM answers''').fetchall() # get answers
-				print(answers)
-				answers = [answer[0] for answer in answers]
-				answers = [answers[answer:answer+3] for answer in range(0, len(answers), 3)]
-				print(answers)
-				row[2] = answers[data.index(row)]
-				
-			questions = [Question(*row) for row in data]
-
+			rows = Adapter.adapt_query(database.execute('''SELECT * FROM questions''').fetchall()) # convert the data into a list of lists
+			rows = Adapter.adapt_question_rows(database, rows)
 			
-#			for question in questions:
-#				answers = database.execute('''SELECT answer FROM answers WHERE id = ?''', question.id)
-#				question.answers = answers
-#							
-#			print(questions)
+			print(rows)
 
-			return questions
+			return [Question(*row) for row in rows] # instantiate questions list
 
 
 	@staticmethod
 	def find(id):
 		with DB() as database:
-			row = database.execute('''SELECT * FROM questions WHERE id = ?''', (id,)).fetchone()
+			row = Adapter.adapt_query(database.execute('''SELECT * FROM questions WHERE id = ?''', (id,)).fetchall())
+			
+			row = tuple(Adapter.adapt_question_rows(database, row)[0])
 			
 			return Question(*row)

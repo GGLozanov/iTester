@@ -34,7 +34,7 @@ def new_question():
 
 @app.route('/tests', methods=['GET'])
 def show_tests():
-	return render_template('tests.html', tests=Test.get_all())	# call static method get_all(), which returns the desired list
+	return render_template('tests.html', tests=Test.get_all()) # call static method get_all(), which returns the desired list
 
 @app.route('/new/test', methods=['GET', 'POST'])
 def new_test():
@@ -44,11 +44,11 @@ def new_test():
 		# create a tuple containing all of the needed information given from new_test
 		# id is none because it is autoincrement
 		values = (
-			request.form['title'],
+			None,
 			[Question.find(request.form['question_one']), # 99% sure to bug out??
 				Question.find(request.form['question_two']), # request.form[] returns the value of select element (id)
 				Question.find(request.form['question_three'])], # we use find() with the id to get the object we need
-			None,
+			request.form['title'],
 		)
 
 		Test(*values).create()

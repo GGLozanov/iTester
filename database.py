@@ -32,9 +32,9 @@ CREATE TABLE IF NOT EXISTS questions
 connection.cursor().execute('''
 CREATE TABLE IF NOT EXISTS tests
 	(
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		questions_id INTEGER,
 		title TEXT,
-		test_id INTEGER PRIMARY KEY AUTOINCREMENT,
-		questions_id INTEGER,	
 		FOREIGN KEY(questions_id) REFERENCES questions(id)
 	)
 ''')
