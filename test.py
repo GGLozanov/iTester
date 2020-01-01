@@ -8,18 +8,19 @@ class Test:
 		self.title = title
 		self.questions = questions
 		self.id = id
-		self.correct_answers: List[bool] = [False for _ in range(len(questions))] # create a 'False' boolean list w/list comprehension
+		self.correct_answers = [False for _ in range(len(questions))] # create a 'False' boolean list w/list comprehension
 	
 	def check_test(self):
-		for question in questions:
-			correct_answers[question] = question.is_answer_correct() # set whether current question is correct
+		for question in self.questions:
+			self.correct_answers[self.questions.index(question)] = "Correct" if question.is_answer_correct() else "Incorrect"
+			# set whether current question is correct
 	
 	def set_answers(self, answers: List[str]): # answer amount should be identical to question amount
-		if answers.size() != questions.size():
+		if len(answers) != len(self.questions):
 			return False
 			
-		for question in questions:
-			question.set_answer(answers[question]) 
+		for question in self.questions:
+			question.set_answer(answers[self.questions.index(question)]) 
 			# set answer of question to one given (will be garnered through requests and made into list)
 
 	def create(self):
@@ -29,7 +30,7 @@ class Test:
 				VALUES (?, ?, ?)''', (self.id, self.id, self.title))
 			
 					
-			for question in self.questions: # int array of question ids to search by in questions?
+			for question in self.questions: # int array of question ids to categorise test questions by
 				database.execute('''
 				INSERT INTO test_questions (test_id, question_id) VALUES (?, ?)
 				''', (self.id, question.id))

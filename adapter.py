@@ -1,15 +1,18 @@
 from database import DB
 
 class Adapter:
+	@staticmethod
+	def adapt_list_by_step_3(list):
+		list = [element[0] for element in list] # convert answers into a single list
+		return [list[element:element+3] for element in range(0, len(list), 3)] # create list of lists spliced by 3 elements (answer = int index)
+
 	@staticmethod	
 	def adapt_question_rows(database, rows):
+		answers = Adapter.adapt_list_by_step_3(database.execute('''SELECT answer FROM answers''').fetchall())
+		print(rows)
 		for row in rows:
-			answers = database.execute('''SELECT answer FROM answers''').fetchall() # get distinct answers out of the three questions
-
-			answers = [answer[0] for answer in answers] # convert answers into a single list
-			answers = [answers[answer:answer+3] for answer in range(0, len(answers), 3)] # create list of lists spliced by 3 elements (answer = int index)
-
-			row[2] = answers[rows.index(row)] # set the answers to the answer element in each question
+			row[2] = answers[row[0] - 1] 
+			# set the answers to the answer element in each question (find the apt answer by id -1 index)
 		
 		return rows
 		
