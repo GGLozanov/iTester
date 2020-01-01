@@ -17,7 +17,6 @@ class Adapter:
 	def adapt_test_rows(database, rows, questions):
 		for row in rows:
 			row[1] = questions # place at second position (None)
-			print(row[1])
 			
 		return rows
 	

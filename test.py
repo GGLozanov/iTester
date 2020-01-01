@@ -27,27 +27,26 @@ class Test:
 			database.execute('''
 				INSERT INTO tests (id, questions_id, title)
 				VALUES (?, ?, ?)''', (self.id, self.id, self.title))
-				
-			print(self.questions)
-			for question in self.questions:
 			
-				if not isinstance(question.find(question.id), Question): 
-					question.create()
 					
-					
+			for question in self.questions: # int array of question ids to search by in questions?
+				database.execute('''
+				INSERT INTO test_questions (test_id, question_id) VALUES (?, ?)
+				''', (self.id, question.id))
+				
 			return self
 
 	@staticmethod
 	def get_all():
 		with DB() as database:
 			rows = database.execute('''SELECT * FROM tests''').fetchall() # fetches all rows which correspond to the query (i.e. every row)
-			
-			print(Question.get_all())
 
-			rows = Adapter.adapt_test_rows(database, Adapter.adapt_query(rows), Question.get_all()) 
+			rows = Adapter.adapt_test_rows(database, Adapter.adapt_query(rows), Question.get_test_questions(
+				database.execute('''
+				SELECT question_id FROM test_questions
+				''').fetchall())) 
 			# new rows is result of adapted method return value 
 			# adapt query converts list of tuples into list of lists
-			print(rows)			
 			
 			return [Test(*row) for row in rows] 
 			# for each row in the data, instantiate a class with the values from the table
@@ -59,11 +58,20 @@ class Test:
 			row = Adapter.adapt_query(database.execute('''SELECT * FROM tests WHERE id = ?''', (id,)).fetchall())
 			# rather banal back-and-forth type conversion from list of tuples to list of lists
 			
-			row = tuple(Adapter.adapt_test_rows(database, row, Question.get_all())[0])
+			question_order = database.execute('''
+				SELECT question_id FROM test_questions
+				''').fetchall()
+				
+							
+			question_order = [question_order[question_id:question_id+3] for question_id in range(0, len(question_order), 3)] # create list of lists spliced by 3
+			
+			print(question_order)
+			
+			row = tuple(Adapter.adapt_test_rows(database, row, Question.get_test_questions(question_order[id - 1]))[0])
+			
+			print(row)
 			
 			# fetch a single row where id is given id
 			# sql queries take tuples, which is why we pass arguments in such a manner
-			
-			print(row)
 			
 			return Test(*row) # return new instance of Test() where we pass the elements of the container as args

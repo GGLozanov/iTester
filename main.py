@@ -59,11 +59,16 @@ def new_test():
 
 # takes the reference parameter
 # define class inside html (with name message) with current instance
-@app.route('/test/<int:id>', methods=['GET'])
+@app.route('/test/<int:id>', methods=['GET', 'POST'])
 def show_test(id):
-	# implement corner case where ID is not in table -> exception
-	test = Test.find(id) # get instance dependent on id
-	return render_template('test.html', test=test)
+	if request.method == 'GET':
+		# implement corner case where ID is not in table -> exception
+		test = Test.find(id) # get instance dependent on id
+		return render_template('test.html', test=test)
+	elif request.method == 'POST':
+		# implement corner case where ID is not in table -> exception
+		test = Test.find(id) # get instance dependent on id
+		return render_template('test.html', test=test)
 
 if __name__ == '__main__':
 	app.run()

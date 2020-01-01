@@ -50,13 +50,22 @@ class Question:
 			print(rows)
 
 			return [Question(*row) for row in rows] # instantiate questions list
-
+			
+	@staticmethod
+	def get_test_questions(ids): # takes question ids and returns a list of questions for the given test
+		print(ids)
+		return [Question.find(id[0]) for id in ids]
 
 	@staticmethod
 	def find(id):
 		with DB() as database:
 			row = Adapter.adapt_query(database.execute('''SELECT * FROM questions WHERE id = ?''', (id,)).fetchall())
 			
-			row = tuple(Adapter.adapt_question_rows(database, row)[0])
+			try:
+				row = tuple(Adapter.adapt_question_rows(database, row)[0])
+			except IndexError as error:
+				return None
+				
+			print(row)
 			
 			return Question(*row)

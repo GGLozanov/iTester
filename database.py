@@ -39,6 +39,15 @@ CREATE TABLE IF NOT EXISTS tests
 	)
 ''')
 
+connection.cursor().execute('''
+CREATE TABLE IF NOT EXISTS test_questions
+	(
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		test_id INTEGER,
+		question_id INTEGER
+	)
+''')
+
 class DB:
     def __enter__(self): # when instantiated by with()
         self.conn = sqlite3.connect(DB_NAME)
