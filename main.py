@@ -76,9 +76,11 @@ def show_test(id):
 		
 @app.route('/test/<int:id>/grade', methods=['GET'])
 def grade_test(id):
+	global answers
 	test = Test.find(id)
 	test.set_answers(answers)
 	test.check_test()
+	answers = []
 	return render_template('test_grade.html', test=test)
 
 if __name__ == '__main__':

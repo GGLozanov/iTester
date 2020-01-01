@@ -12,7 +12,7 @@ class Adapter:
 		print(rows)
 		for row in rows:
 			row[2] = answers[row[0] - 1] 
-			# set the answers to the answer element in each question (find the apt answer by id -1 index)
+			# set the answers to the answer element in each question (find the apt answer by id - 1 index)
 		
 		return rows
 		

@@ -22,6 +22,12 @@ class Test:
 		for question in self.questions:
 			question.set_answer(answers[self.questions.index(question)]) 
 			# set answer of question to one given (will be garnered through requests and made into list)
+			
+	def count_correct(self):
+		return (self.correct_answers.count("Correct") / len(self.correct_answers)) * 100
+		
+	def count_incorrect(self):
+		return (self.correct_answers.count("Incorrect") / len(self.correct_answers)) * 100
 
 	def create(self):
 		with DB() as database:

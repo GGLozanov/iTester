@@ -7,3 +7,10 @@
 		<li>Correct answer was: {{ question.correct_answer }}</li>
 	</ul>
 {% endfor %}
+
+<h2>Grade: {{ test.count_correct() }} % </h2>
+
+<h2>Additional Information:</h2>
+<ol>
+	<li>Incorrect answer percentage: {{ test.count_incorrect() }} % </li>
+</ol>
