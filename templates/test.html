@@ -1,17 +1,26 @@
-<title>Test {{ test.id }}</title>
-<h1>{{ test.title }} - Test {{ test.id }}</h1>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test {{ test.id }}</title>
+		<link rel="stylesheet" href="test.css">
+	</head>
 
-<form action="/test/{{ test.id }}" method="post">
-	{% for question in test.questions %}
-		<fieldset>
-			<legend>{{ question.id }}) {{ question.question }}</legend>
-				{% for answer in question.answers %}
-				<input type="radio" name="{{ question.answers.index(answer) }}" value="{{ answer }}">{{ answer }}</input>
-				{% endfor %}
-		</fieldset>
-	{% endfor %}
+	<body>
+		<h1>{{ test.title }} - Test {{ test.id }}</h1>
 
-	<button type="submit">Submit</button>
-</form>
+		<form action="/test/{{ test.id }}" method="post">
+			{% for question in test.questions %}
+					<fieldset>
+						<legend>{{ question.id }}) {{ question.question }}</legend>
+							{% for answer in question.answers %}
+							<input class="answer-field" type="radio" name="{{ question.answers.index(answer) }}" value="{{ answer }}">{{ answer }}</input>
+							{% endfor %}
+					</fieldset>
+			{% endfor %}
+
+			<button type="submit">Submit</button>
+		</form>
+	</body>
+</html>
 
 

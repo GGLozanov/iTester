@@ -41,6 +41,10 @@ class Question:
 					(self.id, self.question, self.id, self.correct_answer_index))
 
 			return self
+			
+	def delete(self):
+		with DB() as database:
+			database.execute('''DELETE FROM questions WHERE id = ?''', (self.id,))
 
 	@staticmethod
 	def get_all():

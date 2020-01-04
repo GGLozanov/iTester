@@ -8,7 +8,7 @@ class Test:
 		self.title = title
 		self.questions = questions
 		self.id = id
-		self.correct_answers = [False for _ in range(len(questions))] # create a 'False' boolean list w/list comprehension
+		self.correct_answers = list(range(len(questions))) # create a list with size answers
 	
 	def check_test(self):
 		for question in self.questions:
@@ -42,7 +42,16 @@ class Test:
 				''', (self.id, question.id))
 				
 			return self
-
+			
+	def delete(self):
+		with DB() as database:
+			database.execute('''DELETE FROM tests WHERE id = ?''', (self.id,))
+			
+	@staticmethod
+	def delete_tests_w_deleted_question(question):
+		for test in Test.get_all():
+			if question in test.questions:
+				test.delete()
 	@staticmethod
 	def get_all():
 		with DB() as database:
@@ -70,7 +79,7 @@ class Test:
 				''').fetchall()
 				
 							
-			question_order = [question_order[question_id:question_id+3] for question_id in range(0, len(question_order), 3)] # create list of lists spliced by 3
+			question_order = Adapter.adapt_list_by_step_3(question_order) # create list of lists spliced by 3
 			
 			print(question_order)
 			

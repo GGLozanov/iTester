@@ -1,0 +1,11 @@
+<form action="/delete/test" method="post">
+    <label>Tests</label>
+	<select name="tests">
+		<option value="0">No test</option>
+		{% for test in tests %}
+		  <option value="{{ test.id }}">{{ test.title }}</option>
+		{% endfor %}
+	</select>
+    </br>
+    <button type="submit">Submit</button>
+</form>

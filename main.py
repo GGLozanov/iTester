@@ -31,6 +31,18 @@ def new_question():
 			
 		return redirect('/questions')
 		
+@app.route('/delete/question', methods=['GET', 'POST'])
+def delete_question():
+	if request.method == 'GET':
+		return render_template('delete_question.html', questions=Question.get_all())
+	elif request.method == 'POST':
+		question = Question.find(int(request.form['questions'])) # id is an int, which is why conversion is necessary
+
+		Test.delete_tests_w_deleted_question(question) # delete tests containing the deleted question
+		
+		question.delete()
+		return redirect('/homepage')
+		
 
 @app.route('/tests', methods=['GET'])
 def show_tests():
@@ -43,18 +55,25 @@ def new_test():
 	elif request.method == 'POST':
 		# create a tuple containing all of the needed information given from new_test
 		# id is none because it is autoincrement
-		values = (
-			None,
-			[Question.find(request.form['question_one']), # 99% sure to bug out??
-				Question.find(request.form['question_two']), # request.form[] returns the value of select element (id)
-				Question.find(request.form['question_three'])], # we use find() with the id to get the object we need
-			request.form['title'],
-		)
-
-		Test(*values).create()
+		
+		Test(None,
+			[Question.find(int(request.form['question_one'])), # 99% sure to bug out??
+				Question.find(int(request.form['question_two'])), # request.form[] returns the value of select element (id)
+				Question.find(int(request.form['question_three']))], # we use find() with the id to get the object we need
+			request.form['title']).create()
+		
 		return redirect('/tests')
 		# instantiate a Test object by passing the tuple's values individually with *
 		# then insert into the database with the static method create() here
+		
+@app.route('/delete/test', methods=['GET', 'POST'])
+def delete_test():
+	if request.method == 'GET':
+		return render_template('delete_test.html', tests=Test.get_all())
+	elif request.method == 'POST':
+		test = Test.find(int(request.form['tests'])) 
+		test.delete()
+		return redirect('/homepage')
 
 
 # takes the reference parameter
