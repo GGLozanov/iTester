@@ -1,5 +1,5 @@
 import hashlib
-
+from adapter import Adapter
 from database import DB
 
 
@@ -48,3 +48,8 @@ class User:
             values = (grade, self.id)
             database.execute('UPDATE users SET grade = ? WHERE id = ?', values)
 
+    @staticmethod
+    def get_all():
+        with DB() as database:
+            users = database.execute('''SELECT * FROM users''').fetchall()
+            return [User(*user) for user in users]

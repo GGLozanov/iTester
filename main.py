@@ -236,6 +236,12 @@ def logout():
         session['logged_in'] = False
         session['USERNAME'] = None
         return redirect('/login')
-        
+
+@app.route('/users', methods=['GET'])
+@require_login
+def show_users():
+    return render_template('users.html', users = User.get_all())
+
+       
 if __name__ == '__main__':
     app.run()

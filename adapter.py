@@ -18,7 +18,7 @@ class Adapter:
 			# set the answers to the answer element in each question (find the apt answer by id - 1 index)
 		
 		return rows
-		
+	
 	@staticmethod
 	def adapt_test_rows(database, rows, questions):
 		for row in rows:
