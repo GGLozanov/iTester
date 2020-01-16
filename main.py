@@ -1,4 +1,5 @@
 from flask import Flask, render_template, url_for, redirect, request, flash, jsonify
+from functools import wraps
 from flask_httpauth import HTTPBasicAuth
 from test import Test
 from question import Question
@@ -11,22 +12,36 @@ app = Flask(__name__)  # instantiate class with name module
 auth = HTTPBasicAuth()  # instantiate authentication class
 
 app.secret_key = "OMG EPIC SUPER SECRET KEY! CHECKMATE GUITARISTS!"
+
+def require_login(func):
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		if not session.get('logged_in'):
+			return redirect('/login')
+		
+		return func(*args, **kwargs)
+		
+	return wrapper
+
 @app.route('/')
 def hello_world():
     return redirect('/login')
 
 
 @app.route('/homepage')
+@require_login
 def get_homepage():
     return render_template('homepage.html')
 
 
 @app.route('/questions', methods=['GET'])
+@require_login
 def show_questions():
     return render_template('questions.html', questions=Question.get_all())
 
 
 @app.route('/new/question', methods=['GET', 'POST'])
+@require_login
 def new_question():
 	if request.method == 'GET':
 		return render_template('new_question.html')
@@ -44,6 +59,7 @@ def new_question():
 		return redirect('/questions')
 		
 @app.route('/edit/question', methods=['GET', 'POST'])
+@require_login
 def edit_question():
 	if request.method == 'GET':
 		return render_template('edit_question.html', questions=Question.get_all())
@@ -65,6 +81,7 @@ def edit_question():
 		return redirect('/homepage')
 
 @app.route('/delete/question', methods=['GET', 'POST'])
+@require_login
 def delete_question():
     if request.method == 'GET':
         return render_template('delete_question.html', questions=Question.get_all())
@@ -80,12 +97,14 @@ def delete_question():
 
 
 @app.route('/tests', methods=['GET'])
+@require_login
 def show_tests():
     # call static method get_all(), which returns the desired list
     return render_template('tests.html', tests=Test.get_all())
 
 
 @app.route('/new/test', methods=['GET', 'POST'])
+@require_login
 def new_test():
 	if request.method == 'GET':
 		return render_template('new_test.html', questions=Question.get_all())
@@ -108,6 +127,7 @@ def new_test():
 		# then insert into the database with the static method create() here
 		
 @app.route('/edit/test', methods=['GET', 'POST'])
+@require_login
 def edit_test():
 	if request.method == 'GET':
 		return render_template('edit_test.html', tests=Test.get_all(), questions=Question.get_all())
@@ -128,6 +148,7 @@ def edit_test():
 		return redirect('/homepage')
 		
 @app.route('/delete/test', methods=['GET', 'POST'])
+@require_login
 def delete_test():
 	if request.method == 'GET':
 		return render_template('delete_test.html', tests=Test.get_all())
@@ -144,6 +165,7 @@ def delete_test():
 # define class inside html (with name message) with current instance
 answers = []
 @app.route('/test/<int:id>', methods=['GET', 'POST'])
+@require_login
 def show_test(id):
     test = Test.find(id)  # get instance dependent on id
     if request.method == 'GET':
@@ -160,6 +182,7 @@ def show_test(id):
 
 
 @app.route('/test/<int:id>/grade', methods=['GET'])
+@require_login
 def grade_test(id):
     global answers
     test = Test.find(id)
