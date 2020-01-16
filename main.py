@@ -56,7 +56,7 @@ def new_question():
 			request.form['answer_one'], request.form['answer_two'], request.form['answer_three'], \
 			request.form['correct_answer'])
 		
-		return redirect('/questions')
+		return redirect('/homepage')
 		
 @app.route('/edit/question', methods=['GET', 'POST'])
 @require_login
@@ -155,9 +155,6 @@ def delete_test():
 	elif request.method == 'POST':
 		test = Test.find(int(request.form['tests'])) 
 		test.delete()
-		app.logger.info('Test "%s" with questions "%s", "%s", "%s" deleted successfully', \
-			test.title, \
-			test.questions[0].question, test.questions[1].question, test.questions[2].question)
 		return redirect('/homepage')
 
 
@@ -208,7 +205,7 @@ def register():
         )
         User(*values).create()
 
-        return redirect('/homepage')
+        return redirect('/login')
 
 
 @app.route('/login', methods=["GET", "POST"])

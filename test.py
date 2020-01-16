@@ -61,7 +61,6 @@ class Test:
 			
 			lens = len(self.questions)
 			for idx, question in enumerate(self.questions):
-				print(question.id)
 				database.execute('''UPDATE test_questions
 				SET question_id = ? WHERE id = ?''', (question.id, self.prev_questions[idx].id))
 			
@@ -71,6 +70,9 @@ class Test:
 	def delete(self):
 		with DB() as database:
 			database.execute('''DELETE FROM tests WHERE id = ?''', (self.id,))
+			
+			for question in self.questions:
+				database.execute('''DELETE FROM test_questions WHERE test_id = ?''', (self.id,))
 			
 	@staticmethod
 	def delete_tests_w_deleted_question(question):
