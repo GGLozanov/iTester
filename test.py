@@ -2,6 +2,7 @@ from database import DB
 from question import Question
 from typing import List
 from adapter import Adapter
+from user import User
 
 class Test:
 	def __init__(self, id: int, questions: List[Question], title: str):
