@@ -13,15 +13,17 @@ auth = HTTPBasicAuth()  # instantiate authentication class
 
 app.secret_key = "OMG EPIC SUPER SECRET KEY! CHECKMATE GUITARISTS!"
 
+
 def require_login(func):
-	@wraps(func)
-	def wrapper(*args, **kwargs):
-		if not session.get('logged_in'):
-			return redirect('/login')
-		
-		return func(*args, **kwargs)
-		
-	return wrapper
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect('/login')
+
+        return func(*args, **kwargs)
+
+    return wrapper
+
 
 @app.route('/')
 def hello_world():
@@ -43,42 +45,47 @@ def show_questions():
 @app.route('/new/question', methods=['GET', 'POST'])
 @require_login
 def new_question():
-	if request.method == 'GET':
-		return render_template('new_question.html')
-	elif request.method == 'POST':
-		Question(None,
-			request.form['question'],
-			[request.form['answer_one'], request.form['answer_two'], request.form['answer_three']],
-			request.form['correct_answer']).create()
-			
-		app.logger.info('Question "%s" with answers "%s", "%s", "%s" and correct answer "%s" created successfully', \
-			request.form['question'], \
-			request.form['answer_one'], request.form['answer_two'], request.form['answer_three'], \
-			request.form['correct_answer'])
-		
-		return redirect('/questions')
-		
+    if request.method == 'GET':
+        return render_template('new_question.html')
+    elif request.method == 'POST':
+        Question(None,
+                 request.form['question'],
+                 [request.form['answer_one'], request.form['answer_two'],
+                     request.form['answer_three']],
+                 request.form['correct_answer']).create()
+
+        app.logger.info('Question "%s" with answers "%s", "%s", "%s" and correct answer "%s" created successfully',
+                        request.form['question'],
+                        request.form['answer_one'], request.form['answer_two'], request.form['answer_three'],
+                        request.form['correct_answer'])
+
+        return redirect('/questions')
+
+
 @app.route('/edit/question', methods=['GET', 'POST'])
 @require_login
 def edit_question():
-	if request.method == 'GET':
-		return render_template('edit_question.html', questions=Question.get_all())
-	elif request.method == 'POST':
-		question = Question.find(int(request.form['questions']))
-		
-		values = (
-			request.form['question'],
-			request.form['correct_answer'],
-		)
-		
-		answers = [
-			request.form['answer_one'],
-			request.form['answer_two'],
-			request.form['answer_three'],
-		]
-		
-		question.update(values, answers).edit()
-		return redirect('/homepage')
+    if request.method == 'GET':
+        return render_template('edit_question.html', questions=Question.get_all())
+    elif request.method == 'POST':
+        question = Question.find(int(request.form['questions']))
+
+        values = (
+            request.form['question'],
+            request.form['correct_answer'],
+        )
+
+        answers = [
+            request.form['answer_one'],
+            request.form['answer_two'],
+            request.form['answer_three'],
+        ]
+
+        question.update(values, answers).edit()
+        app.logger.info("question %s was edited succesfully",
+                        request.form['question'])
+        return redirect('/homepage')
+
 
 @app.route('/delete/question', methods=['GET', 'POST'])
 @require_login
@@ -93,6 +100,7 @@ def delete_question():
         Test.delete_tests_w_deleted_question(question)
 
         question.delete()
+        app.logger.info("question %s was succesfully deleted", request.form['question'])
         return redirect('/homepage')
 
 
@@ -106,59 +114,63 @@ def show_tests():
 @app.route('/new/test', methods=['GET', 'POST'])
 @require_login
 def new_test():
-	if request.method == 'GET':
-		return render_template('new_test.html', questions=Question.get_all())
-	elif request.method == 'POST':
-		# create a tuple containing all of the needed information given from new_test
-		# id is none because it is autoincrement
-		
-		Test(None,
-			[Question.find(int(request.form['question_one'])), # 99% sure to bug out??
-				Question.find(int(request.form['question_two'])), # request.form[] returns the value of select element (id)
-				Question.find(int(request.form['question_three']))], # we use find() with the id to get the object we need
-			request.form['title']).create()
-			
-		app.logger.info('Test "%s" with questions "%s", "%s", "%s" created successfully', \
-			request.form['title'], \
-			request.form['question_one'], request.form['question_two'], request.form['question_three'])
-			
-		return redirect('/tests')
-		# instantiate a Test object by passing the tuple's values individually with *
-		# then insert into the database with the static method create() here
-		
+    if request.method == 'GET':
+        return render_template('new_test.html', questions=Question.get_all())
+    elif request.method == 'POST':
+        # create a tuple containing all of the needed information given from new_test
+        # id is none because it is autoincrement
+
+        Test(None,
+             [Question.find(int(request.form['question_one'])),  # 99% sure to bug out??
+                 # request.form[] returns the value of select element (id)
+                 Question.find(int(request.form['question_two'])),
+                 Question.find(int(request.form['question_three']))],  # we use find() with the id to get the object we need
+             request.form['title']).create()
+
+        app.logger.info('Test "%s" with questions "%s", "%s", "%s" created successfully',
+                        request.form['title'],
+                        request.form['question_one'], request.form['question_two'], request.form['question_three'])
+
+        return redirect('/tests')
+        # instantiate a Test object by passing the tuple's values individually with *
+        # then insert into the database with the static method create() here
+
+
 @app.route('/edit/test', methods=['GET', 'POST'])
 @require_login
 def edit_test():
-	if request.method == 'GET':
-		return render_template('edit_test.html', tests=Test.get_all(), questions=Question.get_all())
-	elif request.method == 'POST':
-		test = Test.find(int(request.form['tests']))
-		
-		values = (
-			request.form['title']
-		)
-		
-		questions = [
-			Question.find(request.form['question_one']),
-			Question.find(request.form['question_two']),
-			Question.find(request.form['question_three'])
-		]
-		
-		test.update(values, questions).edit()
-		return redirect('/homepage')
-		
+    if request.method == 'GET':
+        return render_template('edit_test.html', tests=Test.get_all(), questions=Question.get_all())
+    elif request.method == 'POST':
+        test = Test.find(int(request.form['tests']))
+
+        values = (
+            request.form['title']
+        )
+
+        questions = [
+            Question.find(request.form['question_one']),
+            Question.find(request.form['question_two']),
+            Question.find(request.form['question_three'])
+        ]
+
+        test.update(values, questions).edit()
+        app.logger.info("test %s was succesfully edited", request.form['title'])
+        return redirect('/homepage')
+
+
 @app.route('/delete/test', methods=['GET', 'POST'])
 @require_login
 def delete_test():
-	if request.method == 'GET':
-		return render_template('delete_test.html', tests=Test.get_all())
-	elif request.method == 'POST':
-		test = Test.find(int(request.form['tests'])) 
-		test.delete()
-		app.logger.info('Test "%s" with questions "%s", "%s", "%s" deleted successfully', \
-			test.title, \
-			test.questions[0].question, test.questions[1].question, test.questions[2].question)
-		return redirect('/homepage')
+    if request.method == 'GET':
+        return render_template('delete_test.html', tests=Test.get_all())
+    elif request.method == 'POST':
+        test = Test.find(int(request.form['tests']))
+        test.delete()
+        app.logger.info('Test "%s" with questions "%s", "%s", "%s" deleted successfully',
+                        test.title,
+                        test.questions[0].question, test.questions[1].question, test.questions[2].question)
+        return redirect('/homepage')
 
 
 # takes the reference parameter
@@ -178,6 +190,7 @@ def show_test(id):
             answers.append(
                 request.form[str(test.questions.index(question) + 1)])
 
+        app.logger.info("tests successfuly rendered")
         return redirect('/test/%d/grade' % id)
 
 
@@ -192,6 +205,7 @@ def grade_test(id):
     user = User.find_by_username(session['USERNAME'])
     User.insert_grade(user, grade)
     answers = []
+    app.logger.info("test successfuly gradet")
     return render_template('test_grade.html', test=test)
 
 
@@ -207,7 +221,7 @@ def register():
             0
         )
         User(*values).create()
-
+        app.logger.info("user %s successfuly registered", request.form['username'])
         return redirect('/homepage')
 
 
@@ -218,30 +232,33 @@ def login():
     elif request.method == 'POST':
         username = request.form["username"]
         password = request.form["password"]
-        
+
         user = User.find_by_username(username)
-        
+
         if not user or not user.verify_password(password):
             flash("Invalid Login.")
             return redirect('/login')
-            
+
         session['USERNAME'] = user.username
         session['logged_in'] = True
-        
+        app.logger.info("user %s successfuly logged", session['USERNAME'])
+
         return redirect('/homepage')
-        
+
 
 @app.route('/logout', methods=["POST"])
 def logout():
-        session['logged_in'] = False
-        session['USERNAME'] = None
-        return redirect('/login')
+    session['logged_in'] = False
+    session['USERNAME'] = None
+    app.logger.info("the current user successfuly logged out") 
+    return redirect('/login')
+
 
 @app.route('/users', methods=['GET'])
 @require_login
 def show_users():
-    return render_template('users.html', users = User.get_all())
+    return render_template('users.html', users=User.get_all())
 
-       
+
 if __name__ == '__main__':
     app.run()
