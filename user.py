@@ -4,11 +4,11 @@ from database import DB
 
 
 class User:
-    def __init__(self, id, username, password):
+    def __init__(self, id, username, password, grade):
         self.id = id
         self.username = username
         self.password = password
-        self.grade = 0
+        self.grade = grade
 
     def get_username(self):
         return self.username
@@ -43,9 +43,8 @@ class User:
     def verify_password(self, password):
         return self.password == hashlib.sha256(password.encode('utf-8')).hexdigest()
 
-    def insert_grade(self, grade, username):
+    def insert_grade(self, grade):
         with DB() as database:
-            #database.execute('''SELECT * FROM users WHERE id = ?''', (id,)).fetchall())
-            self.grade = grade
-            database.execute('''INSERT INTO users (grade) VALUES (?) WHERE username = ?''', (self.grade))
+            values = (grade, self.id)
+            database.execute('UPDATE users SET grade = ? WHERE id = ?', values)
 

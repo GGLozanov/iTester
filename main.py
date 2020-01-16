@@ -118,7 +118,7 @@ def grade_test(id):
     test.check_test()
     grade = test.count_correct()
     user = User.find_by_username(session['USERNAME'])
-    User.isert_grade(grade, user.get_username())
+    User.insert_grade(user, grade)
     answers = []
     return render_template('test_grade.html', test=test)
 
@@ -131,7 +131,8 @@ def register():
         values = (
             None,
             request.form['username'],
-            User.hash_password(request.form['password'])
+            User.hash_password(request.form['password']),
+            0
         )
         User(*values).create()
 
