@@ -10,6 +10,12 @@ class User:
         self.password = password
         self.grade = 0
 
+    def get_username(self):
+        return self.username
+
+    def get_password(self):
+        return self.password
+
     def create(self):
         with DB() as db:
             values = (self.username, self.password)
@@ -25,7 +31,7 @@ class User:
         with DB() as db:
             row = db.execute(
                 'SELECT * FROM users WHERE username = ?',
-                (username)
+                (username,)
             ).fetchone()
             if row:
                 return User(*row)
@@ -37,7 +43,9 @@ class User:
     def verify_password(self, password):
         return self.password == hashlib.sha256(password.encode('utf-8')).hexdigest()
 
-    def insert_grade(self, grade):
-        self.grade = grade
-        database.execute(
-            '''INSERT INTO users (grade) VALUES (?)''', (self.grade))
+    def insert_grade(self, grade, username):
+        with DB() as database:
+            #database.execute('''SELECT * FROM users WHERE id = ?''', (id,)).fetchall())
+            self.grade = grade
+            database.execute('''INSERT INTO users (grade) VALUES (?) WHERE username = ?''', (self.grade))
+

@@ -3,16 +3,17 @@ from flask_httpauth import HTTPBasicAuth
 from test import Test
 from question import Question
 from user import User
+from flask import session
 import json
 
 app = Flask(__name__)  # instantiate class with name module
 
 auth = HTTPBasicAuth()  # instantiate authentication class
 
-
+app.secret_key = "OMG EPIC SUPER SECRET KEY! CHECKMATE GUITARISTS!"
 @app.route('/')
 def hello_world():
-    return redirect('/homepage')
+    return redirect('/login')
 
 
 @app.route('/homepage')
@@ -116,7 +117,8 @@ def grade_test(id):
     test.set_answers(answers)
     test.check_test()
     grade = test.count_correct()
-    user.insert_grade(grade)
+    user = User.find_by_username(session['USERNAME'])
+    User.isert_grade(grade, user.get_username())
     answers = []
     return render_template('test_grade.html', test=test)
 
@@ -141,13 +143,15 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
-        data = json.loads(request.data.decode('ascii'))
-        username = data['username']
-        password = data['password']
+        data = json.loads(request.data.decode("ascii"))
+        username = data["username"]
+        password = data["password"]
         user = User.find_by_username(username)
+        if not user or not user.verify_password(password):
+            return redirect('/login')
+        session['USERNAME'] = user.username
 
         return redirect('/homepage')
-
 
 if __name__ == '__main__':
     app.run()
