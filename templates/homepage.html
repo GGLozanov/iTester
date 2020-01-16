@@ -1,9 +1,33 @@
-<title>Homepage</title>
-
-<a href="/tests">Show Tests</a> <br/>
-<a href="/new/test">New Test</a> <br/>
-<a href="/delete/test">Delete Test</a> <br/>
-<a href="/new/question">New Question</a> <br/>
-<a href="/delete/question">Delete Question</a> <br/>
-<a href="/questions">Show Questions</a> <br/>
+<!Doctype html>
+<head>
+                <meta charset="UTF8"/>
+                <title>Homepage</title>
+		<!--<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/homepage.css')}}"> -->
+</head>
+<body bgcolor="GreenYellow">
+	<div class="holder">
+		<div>
+			<button onclick="window.location.href = '/tests';">Show Tests</button>
+		</div>
+		<div>
+			<button onclick="window.location.href = '/new/test';" class="button">New Test</button>
+		</div>
+		<div>
+			<button onclick="window.location.href = '/delete/test';" class="button">Delete Test</button>
+		</div>
+		<div>
+			<button onclick="window.location.href = '/new/question';" class="button">New Question</button>
+		</div>
+		<div>
+			<button onclick="window.location.href = '/delete/question';" class="button">Delete Question</button>
+		</div>
+		<div>
+			<button onclick="window.location.href = '/questions';" class="button">Show Questions</button>
+		</div>
+		<a class="link" href="/tests">Show Tests</a>
+		<form action='/logout' method="POST">
+		<input type="submit" value="Log out">
+		</form>
+	</div>
+</body>
 
