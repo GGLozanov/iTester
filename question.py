@@ -50,11 +50,11 @@ class Question:
 			
 	def edit(self):
 		with DB() as database:
-			len = len(self.answers)
+			lens = len(self.answers)
 			for ans in self.answers:
 				rows = database.execute('''SELECT * from answers''')
 				database.execute('''UPDATE answers
-					SET answer = ? WHERE id = ?''', (ans, self.id * 3 - (len - self.answers.index(ans) - 1)))
+					SET answer = ? WHERE id = ?''', (ans, self.id * 3 - (lens - self.answers.index(ans) - 1)))
 					# set all of the answers of the questio to these (replace the 3 if more questions are needed)
 				
 			database.execute('''UPDATE questions 

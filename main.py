@@ -13,7 +13,6 @@ auth = HTTPBasicAuth()  # instantiate authentication class
 
 app.secret_key = "OMG EPIC SUPER SECRET KEY! CHECKMATE GUITARISTS!"
 
-
 def require_login(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -24,9 +23,8 @@ def require_login(func):
 
     return wrapper
 
-
 @app.route('/')
-def hello_world():
+def route_default_endpoint():
     return redirect('/login')
 
 
@@ -80,7 +78,7 @@ def edit_question():
         ]
 
         question.update(values, answers).edit()
-        app.logger.info("question %s was edited succesfully",
+        app.logger.info("Question %s was edited successfully",
                         request.form['question'])
         return redirect('/homepage')
 
@@ -98,7 +96,7 @@ def delete_question():
         Test.delete_tests_w_deleted_question(question)
 
         question.delete()
-        app.logger.info("question %s was succesfully deleted", request.form['question'])
+        app.logger.info("Question %s was successfully deleted", request.form['question'])
         return redirect('/homepage')
 
 
@@ -153,7 +151,7 @@ def edit_test():
         ]
 
         test.update(values, questions).edit()
-        app.logger.info("test %s was succesfully edited", request.form['title'])
+        app.logger.info("Test %s was succesfully edited", request.form['title'])
         return redirect('/homepage')
 
 
@@ -165,9 +163,10 @@ def delete_test():
     elif request.method == 'POST':
         test = Test.find(int(request.form['tests']))
         test.delete()
-        app.logger.info('Test "%s" with questions "%s", "%s", "%s" deleted successfully',
-                        test.title,
-                        test.questions[0].question, test.questions[1].question, test.questions[2].question)
+        
+        app.logger.info('Test "%s" was deleted successfully',
+                        request.form['tests'])
+                        
         return redirect('/homepage')
 
 
@@ -188,7 +187,7 @@ def show_test(id):
             answers.append(
                 request.form[str(test.questions.index(question) + 1)])
 
-        app.logger.info("tests successfuly rendered")
+        app.logger.info("Tests successfuly rendered")
         return redirect('/test/%d/grade' % id)
 
 
@@ -203,7 +202,7 @@ def grade_test(id):
     user = User.find_by_username(session['USERNAME'])
     User.insert_grade(user, grade)
     answers = []
-    app.logger.info("test successfuly gradet")
+    app.logger.info("Test successfuly graded")
     return render_template('test_grade.html', test=test)
 
 
@@ -248,7 +247,7 @@ def login():
 def logout():
     session['logged_in'] = False
     session['USERNAME'] = None
-    app.logger.info("The current user successfuly logged out") 
+    app.logger.info("The current user successfully logged out") 
     return redirect('/login')
 
 
