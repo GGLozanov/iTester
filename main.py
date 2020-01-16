@@ -28,7 +28,6 @@ def show_questions():
 
 @app.route('/new/question', methods=['GET', 'POST'])
 def new_question():
-<<<<<<< HEAD
 	if request.method == 'GET':
 		return render_template('new_question.html')
 	elif request.method == 'POST':
@@ -64,21 +63,7 @@ def edit_question():
 		
 		question.update(values, answers).edit()
 		return redirect('/homepage')
-		
-=======
-    if request.method == 'GET':
-        return render_template('new_question.html')
-    elif request.method == 'POST':
-        Question(None,
-                 request.form['question'],
-                 [request.form['answer_one'], request.form['answer_two'],
-                     request.form['answer_three']],
-                 request.form['correct_answer']).create()
 
-        return redirect('/questions')
-
-
->>>>>>> 5a0ad76b34585cdab31c2545e24992ef7991a43a
 @app.route('/delete/question', methods=['GET', 'POST'])
 def delete_question():
     if request.method == 'GET':
@@ -102,7 +87,6 @@ def show_tests():
 
 @app.route('/new/test', methods=['GET', 'POST'])
 def new_test():
-<<<<<<< HEAD
 	if request.method == 'GET':
 		return render_template('new_test.html', questions=Question.get_all())
 	elif request.method == 'POST':
@@ -154,34 +138,6 @@ def delete_test():
 			test.title, \
 			test.questions[0].question, test.questions[1].question, test.questions[2].question)
 		return redirect('/homepage')
-=======
-    if request.method == 'GET':
-        return render_template('new_test.html', questions=Question.get_all())
-    elif request.method == 'POST':
-        # create a tuple containing all of the needed information given from new_test
-        # id is none because it is autoincrement
-
-        Test(None,
-             [Question.find(int(request.form['question_one'])),  # 99% sure to bug out??
-                 # request.form[] returns the value of select element (id)
-                 Question.find(int(request.form['question_two'])),
-                 Question.find(int(request.form['question_three']))],  # we use find() with the id to get the object we need
-             request.form['title']).create()
-
-        return redirect('/tests')
-        # instantiate a Test object by passing the tuple's values individually with *
-        # then insert into the database with the static method create() here
-
-
-@app.route('/delete/test', methods=['GET', 'POST'])
-def delete_test():
-    if request.method == 'GET':
-        return render_template('delete_test.html', tests=Test.get_all())
-    elif request.method == 'POST':
-        test = Test.find(int(request.form['tests']))
-        test.delete()
-        return redirect('/homepage')
->>>>>>> 5a0ad76b34585cdab31c2545e24992ef7991a43a
 
 
 # takes the reference parameter
@@ -239,18 +195,24 @@ def login():
     elif request.method == 'POST':
         username = request.form["username"]
         password = request.form["password"]
+        
         user = User.find_by_username(username)
+        
         if not user or not user.verify_password(password):
-            flash("BADYMTS")
+            flash("Invalid Login.")
             return redirect('/login')
+            
         session['USERNAME'] = user.username
         session['logged_in'] = True
+        
         return redirect('/homepage')
+        
 
 @app.route('/logout', methods=["POST"])
 def logout():
         session['logged_in'] = False
         session['USERNAME'] = None
         return redirect('/login')
+        
 if __name__ == '__main__':
     app.run()
