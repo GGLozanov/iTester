@@ -7,6 +7,7 @@ class Test:
 	def __init__(self, id: int, questions: List[Question], title: str):
 		self.title = title
 		self.questions = questions
+		self.prev_questions = None
 		self.id = id
 		self.correct_answers = list(range(len(questions))) # create a list with size answers
 	
@@ -41,6 +42,30 @@ class Test:
 				INSERT INTO test_questions (test_id, question_id) VALUES (?, ?)
 				''', (self.id, question.id))
 				
+			return self
+			
+	def update(self, values, questions):
+		self.title = values
+		self.prev_questions = self.questions
+		self.questions = questions
+	
+		return self
+		
+	def edit(self):
+		with DB() as database:
+			database.execute('''UPDATE tests
+				SET title = ?''', (self.title,))
+			
+			rows = database.execute('''SELECT question_id from test_questions''')
+			print(*rows)
+			
+			lens = len(self.questions)
+			for idx, question in enumerate(self.questions):
+				print(question.id)
+				database.execute('''UPDATE test_questions
+				SET question_id = ? WHERE id = ?''', (question.id, self.prev_questions[idx].id))
+			
+			
 			return self
 			
 	def delete(self):

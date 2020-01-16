@@ -26,20 +26,40 @@ class Question:
 		return len(self.answers)
 	
 	def set_answer(self, answer):
-		print("Ans", answer)
 		self.user_answer = answer
 
 	def is_answer_correct(self) -> bool:
 		return self.user_answer == self.correct_answer
 
 	def create(self): # will probably bug out because there is no insertion or reference to the other table apart from the for loop
-		with DB() as database:		
+		with DB() as database:
 			for ans in self.answers:
 				database.execute('''INSERT INTO answers (id, answer) VALUES (?, ?)''', (self.id, ans))
 		
 			database.execute('''INSERT INTO questions (id, question, answers_id, correct_answer_index) VALUES (?, ?, ?, ?)''',
 					(self.id, self.question, self.id, self.correct_answer_index))
 
+			return self
+			
+	def update(self, values, answers):
+		self.question = values[0]
+		self.correct_answer = values[1]
+		self.answers = answers
+		
+		return self
+			
+	def edit(self):
+		with DB() as database:
+			len = len(self.answers)
+			for ans in self.answers:
+				rows = database.execute('''SELECT * from answers''')
+				database.execute('''UPDATE answers
+					SET answer = ? WHERE id = ?''', (ans, self.id * 3 - (len - self.answers.index(ans) - 1)))
+					# set all of the answers of the questio to these (replace the 3 if more questions are needed)
+				
+			database.execute('''UPDATE questions 
+				SET question = ?, answers_id = ?, correct_answer_index = ?
+				WHERE id = ?''', (self.question, self.id, self.correct_answer_index, self.id))
 			return self
 			
 	def delete(self):

@@ -29,7 +29,33 @@ def new_question():
 			[request.form['answer_one'], request.form['answer_two'], request.form['answer_three']],
 			request.form['correct_answer']).create()
 			
+		app.logger.info('Question "%s" with answers "%s", "%s", "%s" and correct answer "%s" created successfully', \
+			request.form['question'], \
+			request.form['answer_one'], request.form['answer_two'], request.form['answer_three'], \
+			request.form['correct_answer'])
+		
 		return redirect('/questions')
+		
+@app.route('/edit/question', methods=['GET', 'POST'])
+def edit_question():
+	if request.method == 'GET':
+		return render_template('edit_question.html', questions=Question.get_all())
+	elif request.method == 'POST':
+		question = Question.find(int(request.form['questions']))
+		
+		values = (
+			request.form['question'],
+			request.form['correct_answer'],
+		)
+		
+		answers = [
+			request.form['answer_one'],
+			request.form['answer_two'],
+			request.form['answer_three'],
+		]
+		
+		question.update(values, answers).edit()
+		return redirect('/homepage')
 		
 @app.route('/delete/question', methods=['GET', 'POST'])
 def delete_question():
@@ -61,10 +87,34 @@ def new_test():
 				Question.find(int(request.form['question_two'])), # request.form[] returns the value of select element (id)
 				Question.find(int(request.form['question_three']))], # we use find() with the id to get the object we need
 			request.form['title']).create()
-		
+			
+		app.logger.info('Test "%s" with questions "%s", "%s", "%s" created successfully', \
+			request.form['title'], \
+			request.form['question_one'], request.form['question_two'], request.form['question_three'])
+			
 		return redirect('/tests')
 		# instantiate a Test object by passing the tuple's values individually with *
 		# then insert into the database with the static method create() here
+		
+@app.route('/edit/test', methods=['GET', 'POST'])
+def edit_test():
+	if request.method == 'GET':
+		return render_template('edit_test.html', tests=Test.get_all(), questions=Question.get_all())
+	elif request.method == 'POST':
+		test = Test.find(int(request.form['tests']))
+		
+		values = (
+			request.form['title']
+		)
+		
+		questions = [
+			Question.find(request.form['question_one']),
+			Question.find(request.form['question_two']),
+			Question.find(request.form['question_three'])
+		]
+		
+		test.update(values, questions).edit()
+		return redirect('/homepage')
 		
 @app.route('/delete/test', methods=['GET', 'POST'])
 def delete_test():
@@ -73,6 +123,9 @@ def delete_test():
 	elif request.method == 'POST':
 		test = Test.find(int(request.form['tests'])) 
 		test.delete()
+		app.logger.info('Test "%s" with questions "%s", "%s", "%s" deleted successfully', \
+			test.title, \
+			test.questions[0].question, test.questions[1].question, test.questions[2].question)
 		return redirect('/homepage')
 
 

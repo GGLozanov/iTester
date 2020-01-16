@@ -11,7 +11,7 @@
 		<form action="/test/{{ test.id }}" method="post">
 			{% for question in test.questions %}
 					<fieldset>
-						<legend>{{ question.id }}) {{ question.question }}</legend>
+						<legend>{{ test.questions.index(question) + 1 }}) {{ question.question }}</legend>
 							{% for answer in question.answers %}
 							<input class="answer-field" type="radio" name="{{ question.answers.index(answer) }}" value="{{ answer }}">{{ answer }}</input>
 							{% endfor %}
