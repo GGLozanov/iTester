@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request
+from flask import Flask, render_template, url_for, redirect, request, flash, jsonify
 from flask_httpauth import HTTPBasicAuth
 from test import Test
 from question import Question
@@ -143,15 +143,20 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
-        data = json.loads(request.data.decode("ascii"))
-        username = data["username"]
-        password = data["password"]
+        username = request.form["username"]
+        password = request.form["password"]
         user = User.find_by_username(username)
         if not user or not user.verify_password(password):
+            flash("BADYMTS")
             return redirect('/login')
         session['USERNAME'] = user.username
-
+        session['logged_in'] = True
         return redirect('/homepage')
 
+@app.route('/logout', methods=["POST"])
+def logout():
+        session['logged_in'] = False
+        session['USERNAME'] = None
+        return redirect('/login')
 if __name__ == '__main__':
     app.run()

@@ -1,23 +1,13 @@
-<script>
-  function login() {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-
-    var request = new XMLHttpRequest();
-    request.open("POST", '/login', true);
-    request.send(JSON.stringify({
-        username: username,
-        password: password
-    }));
-  }
-</script>
-
-<form action="/login" methods=["GET","POST"]>
+<form action="/login" method="POST">
+	{% for message in get_flashed_messages() %}
+	<p>{{message}}</p>
+	{% endfor %}
   <label>Username</label>
-  <input id="username"/>
+  <input name="username"/>
   </br>
   <label>Password</label>
-  <input id="password" type="password"/>
+  <input name="password" type="password"/>
   </br>
-  <button type="button" onclick="login()">Submit</button>
+  <button type="submit">Log In</button>
+  <a class="link" href="/register">Register</a>
 </form>
