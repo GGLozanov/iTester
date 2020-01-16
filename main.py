@@ -174,9 +174,9 @@ def show_test(id):
     elif request.method == 'POST':
         # implement corner case where ID is not in table -> exception
         # get instance dependent on id
-        for answer in test.questions[0].answers:
+        for question in test.questions:
             answers.append(
-                request.form[str(test.questions[0].answers.index(answer))])
+                request.form[str(test.questions.index(question) + 1)])
 
         return redirect('/test/%d/grade' % id)
 
