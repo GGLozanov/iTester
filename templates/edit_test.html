@@ -1,4 +1,12 @@
-<form action="/new/test" method="post">
+<form action="/edit/test" method="post">
+    <label>Tests</label>
+	<select name="tests">
+		<option value="0">No test</option>
+		{% for test in tests %}
+		  <option value="{{ test.id }}">{{ test.title }}</option>
+		{% endfor %}
+	</select>
+    </br>
     <label>Title</label>
     <input name="title" required />
     </br>

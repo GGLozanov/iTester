@@ -13,13 +13,12 @@ class Adapter:
 	@staticmethod	
 	def adapt_question_rows(database, rows):
 		answers = Adapter.adapt_double_list_by_step_3(database.execute('''SELECT answer FROM answers''').fetchall())
-		print(rows)
 		for row in rows:
 			row[2] = answers[row[0] - 1] 
 			# set the answers to the answer element in each question (find the apt answer by id - 1 index)
 		
 		return rows
-		
+	
 	@staticmethod
 	def adapt_test_rows(database, rows, questions):
 		for row in rows:

@@ -7,6 +7,7 @@ class Test:
 	def __init__(self, id: int, questions: List[Question], title: str):
 		self.title = title
 		self.questions = questions
+		self.prev_questions = None
 		self.id = id
 		self.correct_answers = list(range(len(questions))) # create a list with size answers
 	
@@ -31,21 +32,50 @@ class Test:
 
 	def create(self):
 		with DB() as database:
+			print(self.id)
 			database.execute('''
 				INSERT INTO tests (id, questions_id, title)
 				VALUES (?, ?, ?)''', (self.id, self.id, self.title))
-			
 					
 			for question in self.questions: # int array of question ids to categorise test questions by
 				database.execute('''
-				INSERT INTO test_questions (test_id, question_id) VALUES (?, ?)
+				INSERT INTO test_questions (id, question_id) VALUES (?, ?)
 				''', (self.id, question.id))
 				
+				database.execute('''UPDATE test_questions
+					SET test_id = id WHERE question_id = ?''', (question.id,))
+				
+			return self
+			
+	def update(self, values, questions):
+		self.title = values
+		self.prev_questions = self.questions
+		self.questions = questions
+	
+		return self
+		
+	def edit(self):
+		with DB() as database:
+			database.execute('''UPDATE tests
+				SET title = ?''', (self.title,))
+			
+			rows = database.execute('''SELECT * from test_questions''')
+			print(*rows)
+			
+			lens = len(self.questions)
+			for idx, question in enumerate(self.questions):
+				database.execute('''UPDATE test_questions
+				SET test_id = id, question_id = ? WHERE id = ?''', (question.id, self.prev_questions[idx].id))
+			
+			
 			return self
 			
 	def delete(self):
 		with DB() as database:
 			database.execute('''DELETE FROM tests WHERE id = ?''', (self.id,))
+			
+			for question in self.questions:
+				database.execute('''DELETE FROM test_questions WHERE test_id = ?''', (self.id,))
 			
 	@staticmethod
 	def delete_tests_w_deleted_question(question):
@@ -85,7 +115,6 @@ class Test:
 			
 			row = tuple(Adapter.adapt_test_rows(database, row, Question.get_test_questions(question_order[id - 1]))[0])
 			
-			print(row)
 			
 			# fetch a single row where id is given id
 			# sql queries take tuples, which is why we pass arguments in such a manner

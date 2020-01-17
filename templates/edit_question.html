@@ -1,0 +1,32 @@
+<form action="/edit/question" method="post">
+    <label>Questions</label>
+          <select name="questions">
+		<option value="0">No question</option>
+		{% for question in questions %}
+		  <option value="{{ question.id }}">{{ question.question }}</option>
+		{% endfor %}
+    </select>
+    </br>
+    
+    <label>Question</label>
+    <input name="question" required />
+    </br>
+    
+    <label>Answer One</label>
+	<input name="answer_one">
+    </br>
+    
+    <label>Answer Two</label>
+	<input name="answer_two">
+    </br>
+    
+    <label>Answer Three</label>
+	<input name="answer_three">
+    </br>
+    
+    <label>Correct Answer Index</label>
+    <input type="number" name="correct_answer">
+    </br>
+    
+    <button type="submit">Submit</button>
+</form>
