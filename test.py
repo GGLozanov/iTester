@@ -4,24 +4,30 @@ from typing import List
 from adapter import Adapter
 
 class Test:
-	def __init__(self, id: int, questions: List[Question], title: str):
+	def __init__(self, id = None, questions = [Question() for _ in range(3)], title = "TestTest"):
 		self.title = title
 		self.questions = questions
 		self.prev_questions = None
 		self.id = id
-		self.correct_answers = list(range(len(questions))) # create a list with size answers
+		self.correct_answers = [None] * len(questions) # create a list with size answers
+		
+	def __eq__(self, other):
+		if not isinstance(other, Test):
+			return NotImplemented
+		
+		return self.title == other.title
 	
 	def check_test(self):
-		for question in self.questions:
-			self.correct_answers[self.questions.index(question)] = "Correct" if question.is_answer_correct() else "Incorrect"
+		for idx, question in enumerate(self.questions):
+			self.correct_answers[idx] = "Correct" if question.is_answer_correct() else "Incorrect"
 			# set whether current question is correct
 	
 	def set_answers(self, answers: List[str]): # answer amount should be identical to question amount
 		if len(answers) != len(self.questions):
 			return False
 			
-		for question in self.questions:
-			question.set_answer(answers[self.questions.index(question)]) 
+		for idx, question in enumerate(self.questions):
+			question.set_answer(answers[idx]) 
 			# set answer of question to one given (will be garnered through requests and made into list)
 			
 	def count_correct(self):
@@ -32,7 +38,6 @@ class Test:
 
 	def create(self):
 		with DB() as database:
-			print(self.id)
 			database.execute('''
 				INSERT INTO tests (id, questions_id, title)
 				VALUES (?, ?, ?)''', (self.id, self.id, self.title))
@@ -58,9 +63,6 @@ class Test:
 		with DB() as database:
 			database.execute('''UPDATE tests
 				SET title = ?''', (self.title,))
-			
-			rows = database.execute('''SELECT * from test_questions''')
-			print(*rows)
 			
 			lens = len(self.questions)
 			for idx, question in enumerate(self.questions):
@@ -108,13 +110,11 @@ class Test:
 				SELECT question_id FROM test_questions
 				''').fetchall()
 				
-							
-			question_order = Adapter.adapt_list_by_step_3(question_order) # create list of lists spliced by 3
-			
-			print(question_order)
-			
-			row = tuple(Adapter.adapt_test_rows(database, row, Question.get_test_questions(question_order[id - 1]))[0])
-			
+			try:			
+				question_order = Adapter.adapt_list_by_step_3(question_order) # create list of lists spliced by 3
+				row = tuple(Adapter.adapt_test_rows(database, row, Question.get_test_questions(question_order[id - 1]))[0])
+			except IndexError as error:
+				return None
 			
 			# fetch a single row where id is given id
 			# sql queries take tuples, which is why we pass arguments in such a manner

@@ -7,7 +7,7 @@ from adapter import Adapter
 
 class Question:
 
-	def __init__(self, id: int, question: str, answers: List[str], correct_answer_index: int):
+	def __init__(self, id = None, question = "TestQuestion", answers = ["ans1", "ans2", "ans3"], correct_answer_index = 0):
 		self.id = id
 		self.question = question
 		self.answers = answers
@@ -24,6 +24,12 @@ class Question:
 		
 	def __len__(self):
 		return len(self.answers)
+		
+	def __eq__(self, other):
+		if not isinstance(other, Question):
+			return NotImplemented
+		
+		return self.question == other.question
 	
 	def set_answer(self, answer):
 		self.user_answer = answer
@@ -51,10 +57,10 @@ class Question:
 	def edit(self):
 		with DB() as database:
 			lens = len(self.answers)
-			for ans in self.answers:
+			for idx, ans in enumerate(self.answers):
 				rows = database.execute('''SELECT * from answers''')
 				database.execute('''UPDATE answers
-					SET answer = ? WHERE id = ?''', (ans, self.id * 3 - (lens - self.answers.index(ans) - 1)))
+					SET answer = ? WHERE id = ?''', (ans, self.id * 3 - (lens - idx - 1)))
 					# set all of the answers of the questio to these (replace the 3 if more questions are needed)
 				
 			database.execute('''UPDATE questions 
