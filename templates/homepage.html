@@ -1,5 +1,6 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
 <title>Homepage</title>
-
+<div class="holder">
 <a href="/tests">Show Tests</a> <br/>
 <a href="/new/test">New Test</a> <br/>
 <a href="/edit/test">Edit Test</a> <br/>
@@ -12,3 +13,4 @@
 <form action='/logout' method="POST">
 <input type="submit" value="Log out">
 </form>
+</div>

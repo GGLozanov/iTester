@@ -6,6 +6,11 @@ from question import Question
 from user import User
 from flask import session
 import json
+import logging
+from flask.logging import default_handler
+from logging.config import dictConfig
+
+logging.basicConfig(filename='info.log',level=logging.INFO)
 
 app = Flask(__name__)  # instantiate class with name module
 
