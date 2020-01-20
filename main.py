@@ -79,7 +79,7 @@ def edit_question():
 
         question.update(values, answers).edit()
         app.logger.info("Question %s was edited successfully",
-                        request.form['questions'])
+                        request.form['question'])
         return redirect('/homepage')
 
 
@@ -96,7 +96,7 @@ def delete_question():
         Test.delete_tests_w_deleted_question(question)
 
         question.delete()
-        app.logger.info("Question %s was successfully deleted", request.form['questions'])
+        app.logger.info("Question %s was successfully deleted", request.form['question'])
         return redirect('/homepage')
 
 
