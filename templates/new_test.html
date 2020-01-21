@@ -1,26 +1,37 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/new_test.css') }}">
 <form action="/new/test" method="post">
+    <div class="holder">
     <label>Title</label>
+    <div>
     <input name="title" required />
+    <ddiv>
     </br>
     <label>Questions</label>
+	<div>
 	<select name="question_one">
 		<option value="0">No question</option>
 		{% for question in questions %}
 		  <option value="{{ question.id }}">{{ question.question }}</option>
 		{% endfor %}
 	</select>
+	</div>
+	<div>
 	<select name="question_two">
 		<option value="0">No question</option>
 		{% for question in questions %}
 		  <option value="{{ question.id }}">{{ question.question }}</option>
 		{% endfor %}
 	</select>
+	</div>
+	<div>
 	<select name="question_three">
 		<option value="0">No question</option>
 		{% for question in questions %}
 		  <option value="{{ question.id }}">{{ question.question }}</option>
 		{% endfor %}
 	</select>
+	</div>
     </br>
     <button type="submit">Submit</button>
+    <div>
 </form>
