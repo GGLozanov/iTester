@@ -1,13 +1,22 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 <form action="/login" method="POST">
-	{% for message in get_flashed_messages() %}
-	<p>{{message}}</p>
-	{% endfor %}
+  <div class="holder">
+  {% for message in get_flashed_messages() %}
+  <p>{{message}}</p>
+  {% endfor %}
   <label>Username</label>
-  <input name="username"/>
+  <div>
+  <input name="username" required/>
+  </div>
   </br>
   <label>Password</label>
-  <input name="password" type="password"/>
+  <div>
+  <input name="password" type="password" required/>
+  </div>
   </br>
+  <div>
   <button type="submit">Log In</button>
+  </div>
   <a class="link" href="/register">Register</a>
+  <div>
 </form>

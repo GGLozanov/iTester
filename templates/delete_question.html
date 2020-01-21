@@ -1,11 +1,15 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/new_question.css') }}">
 <form action="/delete/question" method="post">
+    <div class="holder">
     <label>Questions</label>
-	<select name="questions">
+    <div>
+	<select name="questions" required>
 		<option value="0">No question</option>
 		{% for question in questions %}
 		  <option value="{{ question.id }}">{{ question.question }}</option>
 		{% endfor %}
 	</select>
+    </div>
     </br>
     <button type="submit">Submit</button>
 </form>

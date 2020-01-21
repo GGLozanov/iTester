@@ -1,23 +1,36 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/new_question.css') }}">
 <form action="/new/question" method="post">
+    <div class="holder">
     <label>Question</label>
+    <div>
     <input name="question" required />
+    </div>
     </br>
     
     <label>Answer One</label>
-	<input name="answer_one" />
+    <div>
+    <input name="answer_one" />
+    </div>
     </br>
     
     <label>Answer Two</label>
-	<input name="answer_two" />
+    <div>
+    <input name="answer_two" />
+    </div>
     </br>
     
     <label>Answer Three</label>
-	<input name="answer_three" />
+    <div>
+    <input name="answer_three" />
+    </div>
     </br>
     
     <label>Correct Answer Index</label>
+    <div>
     <input type="number" name="correct_answer" required />
+    </div>
     </br>
     
     <button type="submit">Submit</button>
+    </div>
 </form>
